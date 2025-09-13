@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recharge</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="recharge-page">
+    <div class="register-container">
+      <header class="recharge-header">
+        <a href="home.html" class="back-link">&larr;</a>
+        <h1>Recharge</h1>
+      </header>
+
+      <div class="balance-display">
+        <p>Account Balance</p>
+        <span id="account-balance">₹0.00</span>
+      </div>
+
+      <div class="currency-selector">
+        <button class="currency-btn active" data-currency="INR" data-min="350">
+          <img src="https://flagcdn.com/w40/in.png" alt="Indian Flag" />
+          <span>RS</span>
+        </button>
+        <button class="currency-btn" data-currency="USD" data-min="10">
+          <img src="https://flagcdn.com/w40/us.png" alt="USA Flag" />
+          <span>USD</span>
+        </button>
+        <button class="currency-btn" data-currency="EUR" data-min="25">
+          <img src="https://flagcdn.com/w40/de.png" alt="German Flag" />
+          <span>EUR</span>
+        </button>
+      </div>
+
+      <form id="recharge-form">
+        <div class="form-group">
+          <label for="recharge-amount">Type recharge amount</label>
+          <input
+            type="number"
+            id="recharge-amount"
+            name="recharge-amount"
+            placeholder="0.00"
+            required
+          />
+        </div>
+        <p id="min-recharge-note" class="min-recharge-note"></p>
+        <div class="qr-id-selector">
+          <button type="button" class="qr-id-btn">Future-world 1</button>
+          <button type="button" class="qr-id-btn">Future-world 2</button>
+          <button type="button" class="qr-id-btn">Future-world 3</button>
+          <button type="button" class="qr-id-btn">Future-world 4</button>
+          <button type="button" class="qr-id-btn">Future-world 5</button>
+          <button type="button" class="qr-id-btn">Future-world 6</button>
+          <button type="button" class="qr-id-btn">Future-world 7</button>
+          <button type="button" class="qr-id-btn">Future-world 8</button>
+          <button type="button" class="qr-id-btn">Future-world 9</button>
+          <button type="button" class="qr-id-btn">Future-world 10</button>
+        </div>
+        <button type="submit" class="submit-btn" id="recharge-btn">
+          <span class="btn-text">Recharge Now</span>
+          <span class="spinner hidden"></span>
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const rechargeForm = document.getElementById("recharge-form");
+      const currencyBtns = document.querySelectorAll(".currency-btn");
+      const minRechargeNote = document.getElementById("min-recharge-note");
+      const rechargeBtn = document.getElementById("recharge-btn");
+      const btnText = rechargeBtn.querySelector(".btn-text");
+      const spinner = rechargeBtn.querySelector(".spinner");
+      const balanceDisplay = document.getElementById("account-balance");
+      const qrIdBtns = document.querySelectorAll(".qr-id-btn");
+
+      // --- Define the base URL for your server ---
+      const SERVER_URL = ""; // Use relative path for hosting
+
+      // --- New: Variable to hold the Razorpay Key ---
+      // This should be initialized as empty and fetched from the server for security.
+      let razorpayKeyId = "";
+
+      // --- New: Get logged-in user's phone number from localStorage ---
+      const loggedInUserPhone = localStorage.getItem("loggedInUserPhone");
+      if (!loggedInUserPhone) {
+        // If no user is logged in, redirect to the login page.
+        alert("You are not logged in. Please log in to recharge.");
+        window.location.href = "login.html";
+      }
+      // --- End New ---
+
+      // --- New: Balance management functions ---
+      function updateBalanceDisplay() {
+        const balance = parseFloat(
+          localStorage.getItem("accountBalance") || "0.00"
+        );
+        // Display the balance with the Rupee symbol for consistency.
+        balanceDisplay.textContent = `₹${balance.toFixed(2)}`;
+      }
+
+      // --- Helper functions to control the button state ---
+      function showSpinner() {
+        rechargeBtn.disabled = true;
+        btnText.textContent = "Processing...";
+        spinner.classList.remove("hidden");
+      }
+
+      function hideSpinner() {
+        rechargeBtn.disabled = false;
+        btnText.textContent = "Recharge Now";
+        spinner.classList.add("hidden");
+      }
+
+      rechargeForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const amountInput = document.getElementById("recharge-amount");
+        const amount = parseFloat(amountInput.value);
+        const activeButton = document.querySelector(".currency-btn.active");
+        const activeCurrency = activeButton.dataset.currency;
+        const minAmount = parseFloat(activeButton.dataset.min);
+        const activeQrIdBtn = document.querySelector(".qr-id-btn.active");
+
+        // Basic validation
+        // --- MODIFIED: Added more robust validation for the amount ---
+        if (isNaN(amount) || amount <= 0) {
+          alert("Please enter a valid, positive recharge amount.");
+          return;
+        }
+
+        if (amount < minAmount) {
+          alert(`Minimum recharge for ${activeCurrency} is ${minAmount}.`);
+          return;
+        }
+
+        // New: Validate that a QR ID is selected
+        if (!activeQrIdBtn) {
+          alert("Please select a Future-world ID to proceed.");
+          return;
+        }
+
+        // New: Validate that the Razorpay Key ID has been fetched
+        if (!razorpayKeyId) {
+          alert(
+            "Payment system is not ready. Please wait a moment and try again."
+          );
+          return;
+        }
+
+        const qrId = activeQrIdBtn.textContent;
+        showSpinner();
+
+        // 1. Create Order on your server
+        fetch(`${SERVER_URL}/create-order`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: amount,
+            currency: activeCurrency,
+            qrId: qrId,
+            phoneNumber: loggedInUserPhone, // Pass the logged-in user's phone number
+          }),
+        })
+          .then((res) => res.json())
+          .then((order) => {
+            if (!order || order.error) {
+            // --- MODIFIED: Display the detailed error message from the server ---
+            const errorMessage = order.message || "Could not create the order. Please check the server console for details.";
+            alert(`Server Error: ${errorMessage}`);
+            console.error("Server Response:", order);
+              hideSpinner();
+              return;
+            }
+
+            // --- MODIFIED: Wrap Razorpay initialization in a try...catch block ---
+            // This helps catch any errors if the Razorpay library itself fails.
+            try {
+              // 2. Open Razorpay Checkout
+              const options = {
+                key: razorpayKeyId, // Use the key fetched from the server
+                amount: order.amount,
+                currency: order.currency,
+                name: "Future World",
+                description: `Recharge for ${qrId}`, // Show the ID on the payment form
+                order_id: order.id,
+                handler: async function (response) {
+                  // This function is called on a successful payment
+                  // 3. Send payment details to your server for verification
+                  try {
+                    const verificationResponse = await fetch(
+                      `${SERVER_URL}/verify-payment`,
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          razorpay_order_id: response.razorpay_order_id,
+                          razorpay_payment_id: response.razorpay_payment_id,
+                          razorpay_signature: response.razorpay_signature,
+                        }),
+                      }
+                    );
+
+                    const result = await verificationResponse.json();
+                    if (verificationResponse.ok && result.status === "success") {
+                      alert("Payment Successful and Verified!");
+                      localStorage.setItem("accountBalance", result.newBalance);
+                      updateBalanceDisplay();
+                      rechargeForm.reset();
+                    } else {
+                      alert(
+                        "Payment verification failed. Please contact support."
+                      );
+                    }
+                  } catch (error) {
+                    console.error("Verification Error:", error);
+                    alert("An error occurred during payment verification.");
+                  } finally {
+                    hideSpinner(); // Hide spinner regardless of verification outcome
+                  }
+                },
+                modal: {
+                  ondismiss: function () {
+                    hideSpinner();
+                  },
+                },
+                prefill: {
+                  name: "Test User",
+                  email: "test.user@example.com",
+                  contact: loggedInUserPhone, // Use the actual user's phone number
+                },
+                theme: {
+                  color: "#22d3ee",
+                },
+              };
+              const rzp1 = new Razorpay(options);
+              rzp1.open();
+            } catch (razorpayError) {
+              console.error("Razorpay Initialization Error:", razorpayError);
+              alert(`A client-side error occurred with the payment gateway: ${razorpayError.message}`);
+              hideSpinner();
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Could not connect to the server to create the order.");
+            hideSpinner();
+          });
+      });
+
+      function updateMinRechargeNote() {
+        const activeButton = document.querySelector(".currency-btn.active");
+        const currency = activeButton.dataset.currency.toUpperCase();
+        const minAmount = activeButton.dataset.min;
+        let symbol = "";
+        if (currency === "USD") symbol = "$";
+        if (currency === "EUR") symbol = "€";
+        if (currency === "INR") symbol = "₹";
+        minRechargeNote.textContent = `Minimum recharge: ${symbol}${minAmount}`;
+      }
+
+      // Currency selector logic
+      currencyBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currencyBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          updateMinRechargeNote();
+        });
+      });
+
+      // New: QR ID selector logic
+      qrIdBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // Allow toggling active state, but only one can be active.
+          const isActive = btn.classList.contains("active");
+          qrIdBtns.forEach((b) => b.classList.remove("active"));
+          if (!isActive) {
+            btn.classList.add("active");
+          }
+        });
+      });
+
+      // --- New: Run setup logic after the page content has loaded ---
+      document.addEventListener("DOMContentLoaded", () => {
+        // Fetch the Razorpay Key ID from our server to ensure it matches the backend.
+        fetch(`${SERVER_URL}/api/get-key`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.key) {
+              razorpayKeyId = data.key;
+            } else {
+              console.error("Could not fetch Razorpay Key ID from server.");
+              alert("Error: Payment system is not configured correctly.");
+            }
+          })
+          .catch((err) => {
+            console.error("Error fetching Razorpay Key:", err);
+            alert("Could not connect to the payment system.");
+          });
+
+        updateMinRechargeNote();
+        updateBalanceDisplay();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "appId": "com.futureworld.app",
+  "appName": "Future World",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
+[
+  {
+    "id": 1,
+    "phoneNumber": "9541354578",
+    "password": "9541354578",
+    "invitationCode": "95413545",
+    "balance": 1200
+  },
+  {
+    "id": 2,
+    "phoneNumber": "9541354570",
+    "password": "9541354578",
+    "invitationCode": "9541",
+    "balance": 2500,
+    "hashrate": [
+      {
+        "name": "Future Miner 60D",
+        "image": "https://placehold.co/300x200/0f172a/5eead4?text=Miner+60D",
+        "hashrate": "2,000 H/s",
+        "dailyIncome": "₹112.00",
+        "price": 2000
+      }
+    ]
+  }
+]

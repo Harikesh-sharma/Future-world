@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Hashrate</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="recharge-page product-page">
+    <!-- Reusing classes for consistent styling -->
+    <div class="register-container">
+      <header class="recharge-header">
+        <a href="home.html" class="back-link">&larr;</a>
+        <h2>My Hashrate</h2>
+      </header>
+
+      <div id="hashrate-list" class="product-grid">
+        <!-- Purchased products will be dynamically inserted here by the script -->
+      </div>
+
+      <div
+        id="no-hashrate-message"
+        style="
+          display: none;
+          text-align: center;
+          color: #94a3b8;
+          margin-top: 50px;
+        "
+      >
+        <p>You have not purchased any hashrate products yet.</p>
+        <a
+          href="product.html"
+          class="submit-btn"
+          style="
+            max-width: 200px;
+            margin: 20px auto 0;
+            text-decoration: none;
+            display: block;
+          "
+          >Browse Products</a
+        >
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const hashrateList = document.getElementById("hashrate-list");
+        const noHashrateMessage = document.getElementById(
+          "no-hashrate-message"
+        );
+        const loggedInUserPhone = localStorage.getItem("loggedInUserPhone");
+        const SERVER_URL = ""; // Use relative path for hosting
+
+        if (!loggedInUserPhone) {
+          alert("Please log in to view your hashrate.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${SERVER_URL}/api/get-hashrate?phoneNumber=${loggedInUserPhone}`
+          );
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.message || "Failed to fetch hashrate data."
+            );
+          }
+          const data = await response.json();
+          const myHashrate = data.hashrate;
+
+          if (!myHashrate || myHashrate.length === 0) {
+            noHashrateMessage.style.display = "block";
+          } else {
+            noHashrateMessage.style.display = "none";
+            myHashrate.forEach((product) => {
+              const productCard = document.createElement("div");
+              productCard.className = "product-card";
+              productCard.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" />
+                <div class="product-card-content">
+                  <h3>${product.name}</h3>
+                  <div class="product-details">
+                    <div class="detail-item"><span>Hashrate:</span><strong>${product.hashrate}</strong></div>
+                    <div class="detail-item"><span>Daily Income:</span><strong>${product.dailyIncome}</strong></div>
+                    <div class="detail-item"><span>Status:</span><strong style="color: #6ee7b7;">Active</strong></div>
+                  </div>
+                </div>
+              `;
+              hashrateList.appendChild(productCard);
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching hashrate:", error);
+          alert(`Could not load your products: ${error.message}`);
+          noHashrateMessage.style.display = "block";
+          noHashrateMessage.querySelector("p").textContent =
+            "Could not load your products. Please try again later.";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Center</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="recharge-page product-page">
+    <!-- Using recharge-page class for similar layout -->
+    <div class="register-container">
+      <header class="recharge-header">
+        <a href="home.html" class="back-link">&larr;</a>
+        <h2>Product Center</h2>
+      </header>
+
+      <!-- New navigation for product categories -->
+      <div class="product-nav">
+        <button class="product-nav-btn active">Hot Sale</button>
+        <button class="product-nav-btn">Exclusive</button>
+        <button class="product-nav-btn">Activity</button>
+      </div>
+
+      <!-- Content for products will go here -->
+      <div class="product-content">
+        <div id="hot-sale-content" class="product-category-content active">
+          <div class="product-grid">
+            <!-- Product Card 1 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Miner+60D"
+                alt="Future Miner 60D"
+              />
+              <div class="product-card-content">
+                <h3>Future Miner 60D</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>2,000 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">2,000</button>
+              </div>
+            </div>
+            <!-- Product Card 2 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Miner+70D"
+                alt="Future Miner 70D"
+              />
+              <div class="product-card-content">
+                <h3>Future Miner 70D</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>19,200 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">19,200</button>
+              </div>
+            </div>
+            <!-- Product Card 3 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Pro+Miner+X1"
+                alt="Pro Miner X1"
+              />
+              <div class="product-card-content">
+                <h3>Pro Miner X1</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>1,200 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">1,200</button>
+              </div>
+            </div>
+            <!-- Product Card 4 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Pro+Miner+X2"
+                alt="Pro Miner X2"
+              />
+              <div class="product-card-content">
+                <h3>Pro Miner X2</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>800 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">800</button>
+              </div>
+            </div>
+            <!-- Product Card 5 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Elite+500Z"
+                alt="Elite Miner 500Z"
+              />
+              <div class="product-card-content">
+                <h3>Elite Miner 500Z</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>2,000 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">2,000</button>
+              </div>
+            </div>
+            <!-- Product Card 6 -->
+            <div class="product-card">
+              <img
+                src="https://placehold.co/300x200/0f172a/5eead4?text=Elite+600Z"
+                alt="Elite Miner 600Z"
+              />
+              <div class="product-card-content">
+                <h3>Elite Miner 600Z</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span>Cycle:</span><strong>60 Days</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Hashrate:</span><strong>3,500 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Total Hashrate:</span><strong>6780 H/s</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Rate:</span><strong>₹4.00</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Daily Income:</span><strong>₹112.00</strong>
+                  </div>
+                </div>
+                <button class="submit-btn">3,500</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="exclusive-content" class="product-category-content">
+          <p>Product listings for "Exclusive" will appear here.</p>
+        </div>
+        <div id="activity-content" class="product-category-content">
+          <p>Product listings for "Activity" will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const productNavBtns = document.querySelectorAll(".product-nav-btn");
+      const productCategoryContents = document.querySelectorAll(
+        ".product-category-content"
+      );
+
+      productNavBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // Remove active class from all buttons
+          productNavBtns.forEach((b) => b.classList.remove("active"));
+          // Add active class to the clicked button
+          btn.classList.add("active");
+
+          // Hide all content sections
+          productCategoryContents.forEach((content) =>
+            content.classList.remove("active")
+          );
+
+          // Show the correct content section
+          const category = btn.textContent.toLowerCase().replace(" ", "-"); // e.g., 'hot-sale'
+          const activeContent = document.getElementById(`${category}-content`);
+          if (activeContent) {
+            activeContent.classList.add("active");
+          }
+        });
+      });
+
+      // --- NEW: Advanced Purchase Logic ---
+
+      const SERVER_URL = ""; // Use relative path for hosting
+      const loggedInUserPhone = localStorage.getItem("loggedInUserPhone");
+
+      // On page load, check for logged-in user
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!loggedInUserPhone) {
+          alert("Please log in to purchase products.");
+          window.location.href = "login.html";
+          return;
+        }
+      });
+
+      const buyButtons = document.querySelectorAll(".product-card .submit-btn");
+
+      buyButtons.forEach((button) => {
+        button.addEventListener("click", async (e) => {
+          if (button.disabled) return;
+
+          const card = e.target.closest(".product-card");
+          const price = parseFloat(e.target.textContent.replace(/,/g, ""));
+          let currentBalance = parseFloat(
+            localStorage.getItem("accountBalance") || "0.00"
+          );
+
+          // Get product data from the card
+          const productName = card.querySelector("h3").textContent;
+          const productImage = card.querySelector("img").src;
+          const details = {};
+          card.querySelectorAll(".detail-item").forEach((item) => {
+            const key = item
+              .querySelector("span")
+              .textContent.replace(":", "")
+              .trim()
+              .toLowerCase()
+              .replace(/\s(.)/g, ($1) => $1.toUpperCase())
+              .replace(/\s/g, "");
+            const value = item.querySelector("strong").textContent;
+            details[key] = value;
+          });
+          const productData = {
+            name: productName,
+            image: productImage,
+            hashrate: details.hashrate,
+            dailyIncome: details.dailyIncome,
+            price: price,
+          };
+
+          // Check balance before allowing purchase
+          if (currentBalance >= price) {
+            if (
+              confirm(
+                `Purchase for ₹${price.toFixed(
+                  2
+                )} using your balance? Your balance is ₹${currentBalance.toFixed(
+                  2
+                )}.`
+              )
+            ) {
+              await purchaseWithBalance(productData, button);
+            }
+          } else {
+            // As requested, fail the purchase if balance is low.
+            alert(
+              `Insufficient balance. You have ₹${currentBalance.toFixed(
+                2
+              )}, but the product costs ₹${price.toFixed(2)}.`
+            );
+          }
+        });
+      });
+
+      async function purchaseWithBalance(productData, button) {
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner"></span> Purchasing...`;
+
+        try {
+          const response = await fetch(`${SERVER_URL}/api/buy-product`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              phoneNumber: loggedInUserPhone,
+              productData: productData, // Send the whole product object
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            // Update balance in localStorage from server response
+            localStorage.setItem("accountBalance", result.newBalance);
+            alert("Purchase successful! Product added to My Hashrate.");
+            // Redirect to see the new product
+            window.location.href = "myhashrate.html";
+          } else {
+            throw new Error(result.message);
+          }
+        } catch (error) {
+          alert(`Purchase failed: ${error.message}`);
+          button.disabled = false;
+          button.innerHTML = productData.price.toLocaleString();
+        }
+      }
+    </script>
+  </body>
+</html>

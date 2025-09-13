@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="recharge-page">
+    <!-- Using recharge-page class for similar layout -->
+    <div class="register-container">
+      <header class="recharge-header">
+        <a href="home.html" class="back-link">&larr;</a>
+        <h1>Edit Profile</h1>
+      </header>
+
+      <form id="profile-form">
+        <div class="form-group">
+          <label for="phone-number">Phone Number</label>
+          <input
+            type="tel"
+            id="phone-number"
+            name="phoneNumber"
+            readonly
+            disabled
+          />
+        </div>
+        <div class="form-group">
+          <label for="current-password">Current Password</label>
+          <input
+            type="password"
+            id="current-password"
+            name="currentPassword"
+            placeholder="Enter your current password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="new-password">New Password</label>
+          <input
+            type="password"
+            id="new-password"
+            name="newPassword"
+            placeholder="Enter a new password (min. 8 characters)"
+            required
+            minlength="8"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm-new-password">Confirm New Password</label>
+          <input
+            type="password"
+            id="confirm-new-password"
+            name="confirmNewPassword"
+            placeholder="Confirm your new password"
+            required
+            minlength="8"
+          />
+        </div>
+        <button type="submit" class="submit-btn" id="update-btn">
+          <span class="btn-text">Update Password</span>
+          <span class="spinner hidden"></span>
+        </button>
+      </form>
+      <p id="form-message" class="form-message"></p>
+    </div>
+
+    <script>
+      const profileForm = document.getElementById("profile-form");
+      const phoneNumberInput = document.getElementById("phone-number");
+      const messageEl = document.getElementById("form-message");
+      const updateBtn = document.getElementById("update-btn");
+      const btnText = updateBtn.querySelector(".btn-text");
+      const spinner = updateBtn.querySelector(".spinner");
+
+      const SERVER_URL = ""; // Use relative path for hosting
+      const loggedInUserPhone = localStorage.getItem("loggedInUserPhone");
+
+      // Helper functions to control the button state
+      function showSpinner() {
+        updateBtn.disabled = true;
+        btnText.textContent = "Updating...";
+        spinner.classList.remove("hidden");
+      }
+
+      function hideSpinner() {
+        updateBtn.disabled = false;
+        btnText.textContent = "Update Password";
+        spinner.classList.add("hidden");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!loggedInUserPhone) {
+          alert("You are not logged in. Please log in to view your profile.");
+          window.location.href = "login.html";
+          return;
+        }
+        // Display the user's phone number
+        phoneNumberInput.value = loggedInUserPhone;
+      });
+
+      profileForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        messageEl.textContent = "";
+        messageEl.classList.remove("success", "error");
+
+        const formData = new FormData(profileForm);
+        const data = Object.fromEntries(formData.entries());
+
+        if (data.newPassword !== data.confirmNewPassword) {
+          messageEl.textContent = "New passwords do not match.";
+          messageEl.classList.add("error");
+          return;
+        }
+
+        showSpinner();
+
+        try {
+          const response = await fetch(`${SERVER_URL}/api/update-profile`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              phoneNumber: loggedInUserPhone,
+              currentPassword: data.currentPassword,
+              newPassword: data.newPassword,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            messageEl.textContent = result.message;
+            messageEl.classList.add("success");
+            profileForm.reset();
+            phoneNumberInput.value = loggedInUserPhone; // Keep phone number displayed
+          } else {
+            messageEl.textContent = result.message || "An error occurred.";
+            messageEl.classList.add("error");
+          }
+        } catch (error) {
+          console.error("Update profile error:", error);
+          messageEl.textContent = "Could not connect to the server.";
+          messageEl.classList.add("error");
+        } finally {
+          hideSpinner();
+        }
+      });
+    </script>
+  </body>
+</html>
